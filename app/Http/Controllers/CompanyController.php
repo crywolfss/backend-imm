@@ -12,6 +12,12 @@ class CompanyController extends Controller
         $companies = Company::all();
         return view('companies.index', compact('companies'));
     }
+ 
+    public function getCompany()
+    {
+        $companies = Company::all();
+        return response($companies);
+    }
 
     public function create()
     {
@@ -71,5 +77,24 @@ class CompanyController extends Controller
         $company->delete();
 
         return redirect()->route('companies.index')->with('success', 'Company deleted successfully.');
+    }
+
+    public function createCompany(Request $request)
+    {
+        $request->validate([
+            'nama_perusahaan' => 'required',
+            'nama_pic' => 'required',
+            'posisi_pic' => 'required',
+            'nomor_telepon' => 'required',
+            'country' => 'required',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
+            'jumlah_karyawan' => 'required|integer',
+            'tipe_perusahaan' => 'required',
+        ]);
+
+        Company::create($request->all());
+
+        return response()->json(['message' => 'Company created successfully', 'company' => $request], 201);
     }
 }
